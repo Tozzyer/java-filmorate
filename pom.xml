@@ -60,8 +60,8 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.3.1</version>
                 <configuration>
-                    <configLocation>src/main/resources/checkstyle.xml</configLocation>
-                    <suppressionsLocation>src/main/resources/suppressions.xml</suppressionsLocation>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <suppressionsLocation>suppressions.xml</suppressionsLocation>
                     <includes>**/*.java, **/*.xml</includes>
                     <excludes>**/target/**</excludes>
                     <consoleOutput>true</consoleOutput>
