@@ -24,49 +24,21 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        // проверяем выполнение необходимых условий
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            throw new UserValidationException("Логин не может быть пустым или содержать пробелы");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new UserValidationException("Адрес электронной почты не может быть пустым");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new UserValidationException("Неверный адрес электронной почты");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new UserValidationException("Дата рождения в будущем");
-        }
+        validateUser(user);
         user.setId(getNextUserId());
-
         users.put(user.getId(), user);
+        log.info("Новый пользователь создан");
         return user;
     }
 
     @PutMapping
     public User updateUser(@RequestBody User user) {
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            throw new UserValidationException("Логин не может быть пустым или содержать пробелы");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new UserValidationException("Адрес электронной почты не может быть пустым");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new UserValidationException("Неверный адрес электронной почты");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new UserValidationException("Дата рождения в будущем");
-        }
+        validateUser(user);
         if (!users.containsKey(user.getId())) {
             throw new UserValidationException("Пользователь отсутствует");
         }
         users.put(user.getId(), user);
+        log.info("Пользователь обновлён");
         return user;
     }
 
@@ -79,5 +51,22 @@ public class UserController {
         return Math.toIntExact(++currentMaxId);
     }
 
+    public void validateUser(User user) {
+        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            throw new UserValidationException("Логин не может быть пустым или содержать пробелы");
+        }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new UserValidationException("Адрес электронной почты не может быть пустым");
+        }
+        if (!user.getEmail().contains("@")) {
+            throw new UserValidationException("Неверный адрес электронной почты");
+        }
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            throw new UserValidationException("Дата рождения в будущем");
+        }
+    }
 
 }
