@@ -1,7 +1,6 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,11 +11,11 @@ import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 @RestController
 @RequestMapping("/users")
-public class UserService {
+public class FriendsController {
     InMemoryUserStorage userStorage;
 
     @Autowired
-    public UserService(InMemoryUserStorage userStorage) {
+    public FriendsController(InMemoryUserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -24,7 +23,7 @@ public class UserService {
     @PutMapping("/{id}/friends/{friendId}")
     public String addFriend(@PathVariable Long id, @PathVariable Long friendId){
         if(!checkFriendsAvalaibility(id,friendId)){
-        throw new UserValidationException("Пользователь отсутствует");
+            throw new UserValidationException("Пользователь отсутствует");
         }
         return id.toString()+friendId.toString();
     }
@@ -37,3 +36,4 @@ public class UserService {
     }
 
 }
+
