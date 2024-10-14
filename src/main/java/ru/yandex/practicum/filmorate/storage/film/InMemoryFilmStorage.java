@@ -13,20 +13,16 @@ import java.util.Map;
 
 @Component
 @Slf4j
-@RestController
-@RequestMapping("/films")
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
 
     @Override
-    @GetMapping
     public Collection<Film> findAllFilms() {
         log.info("Запрошены все фильмы");
         return films.values();
     }
 
     @Override
-    @PostMapping
     public Film createFilm(@RequestBody Film film) {
         validateFilm(film);
         film.setId(getNextFilmId());
@@ -36,7 +32,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    @PutMapping
     public Film updateFilm(@RequestBody Film film) {
         validateFilm(film);
         if (!films.containsKey(film.getId())) {

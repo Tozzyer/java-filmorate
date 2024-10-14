@@ -3,12 +3,12 @@ package ru.yandex.practicum.filmorate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exceptions.FilmValidationException;
 import ru.yandex.practicum.filmorate.exceptions.UserValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ class FilmorateApplicationTests {
 
     @Test
     void correctFilm() {
-        InMemoryFilmStorage master = new InMemoryFilmStorage();
+        FilmController master = new FilmController();
         Film film = new Film(1, "The Hateful eight", "Western", LocalDate.of(2015, 12, 18), 187);
         master.createFilm(film);
         Collection<Film> filmsCollect = master.findAllFilms();
@@ -35,7 +35,7 @@ class FilmorateApplicationTests {
 
     @Test
     void incorretDateFilm() {
-        InMemoryFilmStorage master = new InMemoryFilmStorage();
+        FilmController master = new FilmController();
         Film film = new Film(0, "The Hateful eight", "Western", LocalDate.of(1890, 12, 18), 187);
         FilmValidationException thrown = assertThrows(
                 FilmValidationException.class,
@@ -47,7 +47,7 @@ class FilmorateApplicationTests {
 
     @Test
     void incorretFilmNaming() {
-        InMemoryFilmStorage master = new InMemoryFilmStorage();
+        FilmController master = new FilmController();
         Film film = new Film(0, " ", "Western", LocalDate.of(2015, 12, 18), 187);
         FilmValidationException thrown = assertThrows(
                 FilmValidationException.class,
@@ -58,7 +58,7 @@ class FilmorateApplicationTests {
 
     @Test
     void incorretFilmDuration() {
-        InMemoryFilmStorage master = new InMemoryFilmStorage();
+        FilmController master = new FilmController();
         Film film = new Film(0, "The Hateful Eight", "Western", LocalDate.of(2015, 12, 18), -187);
         FilmValidationException thrown = assertThrows(
                 FilmValidationException.class,
@@ -69,7 +69,7 @@ class FilmorateApplicationTests {
 
     @Test
     void correctUserTest() {
-        InMemoryUserStorage master = new InMemoryUserStorage();
+        UserController master = new UserController();
         User user = new User(0, "JD@post.com", "JohnDoe", "John", LocalDate.of(1980, 12, 12));
         master.createUser(user);
         Collection<User> usersCollect = master.findAllUsers();
@@ -79,7 +79,7 @@ class FilmorateApplicationTests {
 
     @Test
     void incorrectMailUserTest() {
-        InMemoryUserStorage master = new InMemoryUserStorage();
+        UserController master = new UserController();
         User user = new User(0, "JDpost.com", "JohnDoe", "John", LocalDate.of(1980, 12, 12));
         UserValidationException thrown = assertThrows(
                 UserValidationException.class,
@@ -90,7 +90,7 @@ class FilmorateApplicationTests {
 
     @Test
     void incorrectEmptyMailUserTest() {
-        InMemoryUserStorage master = new InMemoryUserStorage();
+        UserController master = new UserController();
         User user = new User(0, " ", "JohnDoe", "John", LocalDate.of(1980, 12, 12));
         UserValidationException thrown = assertThrows(
                 UserValidationException.class,
@@ -101,7 +101,7 @@ class FilmorateApplicationTests {
 
     @Test
     void incorrectLoginUserTest() {
-        InMemoryUserStorage master = new InMemoryUserStorage();
+        UserController master = new UserController();
         User user = new User(0, "JD@post.com", "John Doe", "John", LocalDate.of(1980, 12, 12));
         UserValidationException thrown = assertThrows(
                 UserValidationException.class,
@@ -112,7 +112,7 @@ class FilmorateApplicationTests {
 
     @Test
     void incorrectNameUserTest() {
-        InMemoryUserStorage master = new InMemoryUserStorage();
+        UserController master = new UserController();
         User user = new User(0, "JD@post.com", "JohnDoe", "", LocalDate.of(1980, 12, 12));
         master.createUser(user);
         Assertions.assertEquals("JohnDoe", user.getName());
@@ -120,7 +120,7 @@ class FilmorateApplicationTests {
 
     @Test
     void incorrectBirthdateUserTest() {
-        InMemoryUserStorage master = new InMemoryUserStorage();
+        UserController master = new UserController();
         User user = new User(0, "JD@post.com", "JohnDoe", "John", LocalDate.of(2980, 12, 12));
         UserValidationException thrown = assertThrows(
                 UserValidationException.class,
