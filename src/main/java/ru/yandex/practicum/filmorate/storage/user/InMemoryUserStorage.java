@@ -18,13 +18,11 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
 
     @Override
-    @GetMapping
     public Collection<User> findAllUsers() {
         return users.values();
     }
 
     @Override
-    @PostMapping
     public User createUser(@RequestBody User user) {
         validateUser(user);
         user.setId(getNextUserId());
@@ -34,7 +32,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    @PutMapping
     public User updateUser(@RequestBody User user) {
         validateUser(user);
         if (!users.containsKey(user.getId())) {
