@@ -32,8 +32,8 @@ public class FriendsController {
     }
     //вывод списка общих друзей
     @GetMapping("/{id}/friends/common/{friendId}")
-    public Collection<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer friendId)){
-
+    public Collection<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer friendId){
+        return userService.getCommonFriends(id,friendId);
     }
 
 }

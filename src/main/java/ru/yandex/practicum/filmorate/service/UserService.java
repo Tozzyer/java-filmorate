@@ -12,6 +12,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -55,8 +57,23 @@ public class UserService {
 
     //вывод списка общих друзей
     public Collection<User> getCommonFriends(Integer id, Integer friendId){
-        Collection<User> userFriends;
-
+        if(!checkFriendsAvalaibility(id,friendId)){
+            throw new UserValidationException("Пользователь отсутствует");
+        }
+        User firstUser = userStorage.findAllUsers().stream()
+                .filter(user -> user.getId() == id)
+                .findFirst()
+                .orElse(null);
+        User secondUser = userStorage.findAllUsers().stream()
+                .filter(user -> user.getId() == friendId)
+                .findFirst()
+                .orElse(null);
+        Set<Integer> commonId = firstUser.getFriends().stream()
+                .filter(secondUser.getFriends()::contains)
+                .collect(Collectors.toSet());
+        return userStorage.findAllUsers().stream()
+                .filter(user -> commonId.contains(user.getId()))
+                .collect(Collectors.toList());
     }
     //проверка добавления друга
     private boolean checkFriendsAvalaibility(Integer id, Integer friendId) {
