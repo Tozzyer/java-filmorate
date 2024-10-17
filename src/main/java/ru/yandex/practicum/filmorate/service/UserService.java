@@ -32,6 +32,12 @@ public class UserService {
         if(!checkFriendsAvalaibility(id,friendId)){
         throw new UserValidationException("Пользователь отсутствует");
         }
+        User updatedFriend = userStorage.findAllUsers().stream()
+                .filter(user -> user.getId()==friendId)
+                .map(user ->user.addFriend(id))
+                .findFirst()
+                .orElseThrow(()->new UserValidationException("Пользователь отсутствует"));
+
         User updatedUser = userStorage.findAllUsers().stream()
                 .filter(user -> user.getId()==id)
                 .map(user ->user.addFriend(friendId))
@@ -46,6 +52,12 @@ public class UserService {
         if(!checkFriendsAvalaibility(id,friendId)){
             throw new UserValidationException("Пользователь отсутствует");
         }
+        User updatedFriend = userStorage.findAllUsers().stream()
+                .filter(user -> user.getId()==friendId)
+                .map(user ->user.deleteFriend(id))
+                .findFirst()
+                .orElseThrow(()->new UserValidationException("Пользователь отсутствует"));
+
         User updatedUser = userStorage.findAllUsers().stream()
                 .filter(user -> user.getId()==id)
                 .map(user ->user.deleteFriend(friendId))
