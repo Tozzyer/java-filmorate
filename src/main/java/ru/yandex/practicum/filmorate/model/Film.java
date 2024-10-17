@@ -23,10 +23,10 @@ public class Film {
     private Set<Integer> whoLikes;
 
     public Film addLike(Integer id) {
-        if(whoLikes == null){
+        if (whoLikes == null) {
             whoLikes = new HashSet<>();
         }
-        if(whoLikes.contains(id)){
+        if (whoLikes.contains(id)) {
             throw new UnknownDataException("Пользователь уже поставил лайк");
         }
         whoLikes.add(id);
@@ -34,11 +34,11 @@ public class Film {
         return this;
     }
 
-    public Film removeLike(Integer id){
-        if(whoLikes == null){
+    public Film removeLike(Integer id) {
+        if (whoLikes == null) {
             whoLikes = new HashSet<>();
         }
-        if(!whoLikes.contains(id)){
+        if (!whoLikes.contains(id)) {
             throw new UnknownDataException("Пользователь не ставил лайк");
         }
         whoLikes.remove(id);

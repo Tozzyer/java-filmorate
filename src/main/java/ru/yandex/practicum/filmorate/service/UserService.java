@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -88,16 +87,17 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public Collection<Integer> getFriends(Integer id) {
+    public Collection<User> getFriends(Integer id) {
         if (!(inMemoryUserStorage.findAllUsers().stream().anyMatch(user -> user.getId() == id))) {
             throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно сформировать список друзей");
         }
-
-            return inMemoryUserStorage.findAllUsers().stream()
-                    .filter(user -> user.getId() == id)
-                    .map(User::getFriends)
-                    .findFirst() // Берем первый результат
-                    .orElseThrow(() -> new UnknownDataException("Пользователь отсутствует")); // Обработка, если пользователя нет
+        Collection<Integer> friendsIds = inMemoryUserStorage.findAllUsers().stream()
+                .filter(user -> user.getId() == id)
+                .flatMap(user -> user.getFriends().stream())
+                .collect(Collectors.toSet());
+        return inMemoryUserStorage.findAllUsers().stream()
+                .filter(user -> friendsIds.contains(user.getId()))
+                .collect(Collectors.toSet());
     }
 
     //проверка добавления друга
