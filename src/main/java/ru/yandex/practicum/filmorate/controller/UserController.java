@@ -36,11 +36,18 @@ public class UserController {
         return inMemoryUserStorage.updateUser(user);
     }
 
+//    //добавление в друзья
+//    @PutMapping("/{id}/friends/{friendId}")
+//    public Collection<User> addFriend(@PathVariable Integer id, @PathVariable Integer friendId){
+//        return userService.addFriend(id,friendId);
+//    }
+
     //добавление в друзья
     @PutMapping("/{id}/friends/{friendId}")
     public User addFriend(@PathVariable Integer id, @PathVariable Integer friendId){
         return userService.addFriend(id,friendId);
     }
+
     //удаление из друзей
     @DeleteMapping("/{id}/friends/{friendId}")
     public User removeFriend(@PathVariable Integer id, @PathVariable Integer friendId){
@@ -50,6 +57,11 @@ public class UserController {
     @GetMapping("/{id}/friends/common/{friendId}")
     public Collection<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer friendId){
         return userService.getCommonFriends(id,friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<Integer> getFriends(@PathVariable Integer id){
+        return userService.getFriends(id);
     }
 
 }

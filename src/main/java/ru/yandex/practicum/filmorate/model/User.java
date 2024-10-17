@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,4 +33,12 @@ public class User {
         friends.remove(friendId);
         return this;
     }
+
+    public Collection<Integer> getFriends(){
+        if (friends == null) {
+            friends = new HashSet<>();
+        }
+        return friends;
+    }
+
 }
