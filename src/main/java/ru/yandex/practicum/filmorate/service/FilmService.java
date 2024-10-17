@@ -57,10 +57,10 @@ public class FilmService {
     }
     //топ10
 
-    public Collection<Film> top(){
+    public Collection<Film> top(Integer count){
         return inMemoryFilmStorage.findAllFilms().stream()
                 .sorted(Comparator.comparingInt(Film::getRating).reversed())
-                .limit(10)
+                .limit(count)
                 .collect(Collectors.toList());
 
     }
