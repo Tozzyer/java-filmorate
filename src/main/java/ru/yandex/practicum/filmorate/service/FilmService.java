@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.exceptions.FilmValidationException;
-import ru.yandex.practicum.filmorate.exceptions.UserValidationException;
+import ru.yandex.practicum.filmorate.exceptions.UnknownDataException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
@@ -36,28 +35,31 @@ public class FilmService {
     //добавление лайка
     public Film addLike(Integer filmId, Integer id){
         if(!checkFilmUserAvalaibility(filmId,id)){
-            throw new FilmValidationException("Невозможно поставить лайк");
+            throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно поставить лайк.");
         }
+        log.info("Запрошено добавление лайка фильму: "+filmId+". От пользователя: "+id);
         return inMemoryFilmStorage.findAllFilms().stream()
                 .filter(film -> film.getId()==filmId)
                 .map(film -> film.addLike(id))
                 .findFirst()
-                .orElseThrow(()->new FilmValidationException("Невозможно поставить лайк"));
+                .orElseThrow(()->new UnknownDataException("Запрошенные ресурсы отсутствуют"));
     }
     //удаление лайка
     public Film removeLike (Integer filmId, Integer id){
         if(!checkFilmUserAvalaibility(filmId,id)){
-            throw new FilmValidationException("Невозможно удалить лайк");
+            throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно удалить лайк.");
         }
+        log.info("Запрошено удаление лайка фильму: "+filmId+". От пользователя: "+id);
         return inMemoryFilmStorage.findAllFilms().stream()
                 .filter(film -> film.getId()==filmId)
                 .map(film -> film.removeLike(id))
                 .findFirst()
-                .orElseThrow(()->new FilmValidationException("Невозможно удалить лайк"));
+                .orElseThrow(()->new UnknownDataException("Запрошенные ресурсы отсутствуют"));
     }
     //топ10
 
     public Collection<Film> top(Integer count){
+        log.info("Запрошен топ фильмов в количестве: "+count);
         return inMemoryFilmStorage.findAllFilms().stream()
                 .sorted(Comparator.comparingInt(Film::getRating).reversed())
                 .limit(count)

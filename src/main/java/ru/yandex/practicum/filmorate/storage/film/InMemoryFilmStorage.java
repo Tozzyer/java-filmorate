@@ -3,7 +3,8 @@ package ru.yandex.practicum.filmorate.storage.film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.FilmValidationException;
+import ru.yandex.practicum.filmorate.exceptions.BadDataException;
+import ru.yandex.practicum.filmorate.exceptions.UnknownDataException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -35,7 +36,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film updateFilm(@RequestBody Film film) {
         validateFilm(film);
         if (!films.containsKey(film.getId())) {
-            throw new FilmValidationException("Фильм отсутствует в базе данных");
+            throw new UnknownDataException("Фильм отсутствует в базе данных");
         }
         films.put(film.getId(), film);
         log.info("Фильм обновлён");
@@ -53,22 +54,22 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private void validateFilm(Film film) {
         if (film == null) {
-            throw new FilmValidationException("Тело запроса не должно быть пустым");
+            throw new BadDataException("Тело запроса не должно быть пустым");
         }
         if (film.getDescription() == null || film.getDescription().isBlank()) {
-            throw new FilmValidationException("Описание не может быть пустым");
+            throw new BadDataException("Описание не может быть пустым");
         }
         if (film.getName() == null || film.getName().isBlank()) {
-            throw new FilmValidationException("Имя не может быть пустым");
+            throw new BadDataException("Имя не может быть пустым");
         }
         if (film.getDescription().length() > 200) {
-            throw new FilmValidationException("Число символов в описании не должно превышать 200");
+            throw new BadDataException("Число символов в описании не должно превышать 200");
         }
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new FilmValidationException("Дата выхода фильма не должна быть раньше дня рождения кинематорграфа");
+            throw new BadDataException("Дата выхода фильма не должна быть раньше дня рождения кинематорграфа");
         }
         if (film.getDuration() < 1) {
-            throw new FilmValidationException("Неверная длительность фильма");
+            throw new BadDataException("Неверная длительность фильма");
         }
     }
 

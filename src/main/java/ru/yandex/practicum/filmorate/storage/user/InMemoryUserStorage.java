@@ -4,7 +4,8 @@ package ru.yandex.practicum.filmorate.storage.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.UserValidationException;
+import ru.yandex.practicum.filmorate.exceptions.BadDataException;
+import ru.yandex.practicum.filmorate.exceptions.UnknownDataException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -35,7 +36,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User updateUser(@RequestBody User user) {
         validateUser(user);
         if (!users.containsKey(user.getId())) {
-            throw new UserValidationException("Пользователь отсутствует");
+            throw new UnknownDataException("Пользователь отсутствует");
         }
         users.put(user.getId(), user);
         log.info("Пользователь обновлён");
@@ -53,19 +54,19 @@ public class InMemoryUserStorage implements UserStorage {
 
     public void validateUser(User user) {
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            throw new UserValidationException("Логин не может быть пустым или содержать пробелы");
+            throw new BadDataException("Логин не может быть пустым или содержать пробелы");
         }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new UserValidationException("Адрес электронной почты не может быть пустым");
+            throw new BadDataException("Адрес электронной почты не может быть пустым");
         }
         if (!user.getEmail().contains("@")) {
-            throw new UserValidationException("Неверный адрес электронной почты");
+            throw new BadDataException("Неверный адрес электронной почты");
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new UserValidationException("Дата рождения в будущем");
+            throw new BadDataException("Дата рождения в будущем");
         }
     }
 

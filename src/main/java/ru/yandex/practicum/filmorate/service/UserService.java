@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.UserValidationException;
+import ru.yandex.practicum.filmorate.exceptions.UnknownDataException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
@@ -26,48 +26,47 @@ public class UserService {
     //добавление в друзья
     public User addFriend(Integer id,Integer friendId){
         if(!checkFriendsAvalaibility(id,friendId)){
-        throw new UserValidationException("Пользователь отсутствует");
+            throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно добавить в друзья.");
         }
         User updatedFriend = inMemoryUserStorage.findAllUsers().stream()
                 .filter(user -> user.getId()==friendId)
                 .map(user ->user.addFriend(id))
                 .findFirst()
-                .orElseThrow(()->new UserValidationException("Пользователь отсутствует"));
+                .orElseThrow(()->new UnknownDataException("Пользователь отсутствует"));
 
         User updatedUser = inMemoryUserStorage.findAllUsers().stream()
                 .filter(user -> user.getId()==id)
                 .map(user ->user.addFriend(friendId))
                 .findFirst()
-                .orElseThrow(()->new UserValidationException("Пользователь отсутствует"));
-
+                .orElseThrow(()->new UnknownDataException("Пользователь отсутствует"));
+        log.info("Запрошено добавление в друзья: "+id+". От пользователя: "+friendId);
         return inMemoryUserStorage.updateUser(updatedUser);
     }
 
     //удаление из друзей
     public User removeFriend(Integer id,Integer friendId){
         if(!checkFriendsAvalaibility(id,friendId)){
-            throw new UserValidationException("Пользователь отсутствует");
+            throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно удалить из друзей.");
         }
         User updatedFriend = inMemoryUserStorage.findAllUsers().stream()
                 .filter(user -> user.getId()==friendId)
                 .map(user ->user.deleteFriend(id))
                 .findFirst()
-                .orElseThrow(()->new UserValidationException("Пользователь отсутствует"));
+                .orElseThrow(()->new UnknownDataException("Пользователь отсутствует"));
 
         User updatedUser = inMemoryUserStorage.findAllUsers().stream()
                 .filter(user -> user.getId()==id)
                 .map(user ->user.deleteFriend(friendId))
                 .findFirst()
-                .orElseThrow(()->new UserValidationException("Пользователь отсутствует"));
-
+                .orElseThrow(()->new UnknownDataException("Пользователь отсутствует"));
+        log.info("Запрошено удаление из в друзей: "+id+". От пользователя: "+friendId);
         return inMemoryUserStorage.updateUser(updatedUser);
     }
 
     //вывод списка общих друзей
     public Collection<User> getCommonFriends(Integer id, Integer friendId){
-        if(!checkFriendsAvalaibility(id,friendId)){
-            throw new UserValidationException("Пользователь отсутствует");
-        }
+        if(!checkFriendsAvalaibility(id,friendId))
+            throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно сформировать список общих друзей.");
         User firstUser = inMemoryUserStorage.findAllUsers().stream()
                 .filter(user -> user.getId() == id)
                 .findFirst()
@@ -79,6 +78,7 @@ public class UserService {
         Set<Integer> commonId = firstUser.getFriends().stream()
                 .filter(secondUser.getFriends()::contains)
                 .collect(Collectors.toSet());
+        log.info("Запрошены общие друзья: "+id+". И: "+friendId);
         return inMemoryUserStorage.findAllUsers().stream()
                 .filter(user -> commonId.contains(user.getId()))
                 .collect(Collectors.toList());
