@@ -1,0 +1,10 @@
+logbook:
+  format:
+    style: json
+  filter:
+    type: request
+    match:
+      - path: /api/sensitive
+logging:
+  level:
+    org.zalando.logbook: WARN

@@ -1,72 +1,60 @@
 package ru.yandex.practicum.filmorate.controller;
 
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
+
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public Collection<User> findAllUsers() {
-        return users.values();
+        return userService.findAllUsers();
     }
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        validateUser(user);
-        user.setId(getNextUserId());
-        users.put(user.getId(), user);
-        log.info("Новый пользователь создан");
-        return user;
+        return userService.createUser(user);
     }
 
     @PutMapping
     public User updateUser(@RequestBody User user) {
-        validateUser(user);
-        if (!users.containsKey(user.getId())) {
-            throw new UserValidationException("Пользователь отсутствует");
-        }
-        users.put(user.getId(), user);
-        log.info("Пользователь обновлён");
-        return user;
+        return userService.updateUser(user);
     }
 
-    private Integer getNextUserId() {
-        long currentMaxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return Math.toIntExact(++currentMaxId);
+    //добавление в друзья
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        return userService.addFriend(id, friendId);
     }
 
-    public void validateUser(User user) {
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            throw new UserValidationException("Логин не может быть пустым или содержать пробелы");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new UserValidationException("Адрес электронной почты не может быть пустым");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new UserValidationException("Неверный адрес электронной почты");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new UserValidationException("Дата рождения в будущем");
-        }
+    //удаление из друзей
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public User removeFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        return userService.removeFriend(id, friendId);
+    }
+
+    //вывод списка общих друзей
+    @GetMapping("/{id}/friends/common/{friendId}")
+    public Collection<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
+        return userService.getCommonFriends(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriends(@PathVariable Integer id) {
+        return userService.getFriends(id);
     }
 
 }

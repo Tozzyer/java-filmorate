@@ -2,75 +2,52 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private final Map<Integer, Film> films = new HashMap<>();
+
+    private final FilmService filmService;
+
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @GetMapping
     public Collection<Film> findAllFilms() {
-        log.info("Запрошены все фильмы");
-        return films.values();
+        return filmService.findAllFilms();
     }
 
     @PostMapping
     public Film createFilm(@RequestBody Film film) {
-        validateFilm(film);
-        film.setId(getNextFilmId());
-        films.put(film.getId(), film);
-        log.info("Фильм создан");
-        return film;
+        return filmService.createFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
-        validateFilm(film);
-        if (!films.containsKey(film.getId())) {
-            throw new FilmValidationException("Фильм отсутствует в базе данных");
-        }
-        films.put(film.getId(), film);
-        log.info("Фильм обновлён");
-        return film;
+        return filmService.updateFilm(film);
     }
 
-    private Integer getNextFilmId() {
-        long currentMaxId = films.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return Math.toIntExact(++currentMaxId);
+    @PutMapping("{filmId}/like/{id}")
+    public Film addLike(@PathVariable Integer filmId, @PathVariable Integer id) {
+        return filmService.addLike(filmId, id);
     }
 
-    private void validateFilm(Film film) {
-        if (film == null) {
-            throw new FilmValidationException("Тело запроса не должно быть пустым");
-        }
-        if (film.getDescription() == null || film.getDescription().isBlank()) {
-            throw new FilmValidationException("Описание не может быть пустым");
-        }
-        if (film.getName() == null || film.getName().isBlank()) {
-            throw new FilmValidationException("Имя не может быть пустым");
-        }
-        if (film.getDescription().length() > 200) {
-            throw new FilmValidationException("Число символов в описании не должно превышать 200");
-        }
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new FilmValidationException("Дата выхода фильма не должна быть раньше дня рождения кинематорграфа");
-        }
-        if (film.getDuration() < 1) {
-            throw new FilmValidationException("Неверная длительность фильма");
-        }
+    @DeleteMapping("{filmId}/like/{id}")
+    public Film removeLike(@PathVariable Integer filmId, @PathVariable Integer id) {
+        return filmService.removeLike(filmId, id);
     }
 
+    @GetMapping("/popular")
+    public Collection<Film> getTop(@RequestParam(defaultValue = "10") Integer count) {
+        return filmService.top(count);
+    }
 }
