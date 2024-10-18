@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FilmService {
-    private InMemoryFilmStorage inMemoryFilmStorage;
-    private InMemoryUserStorage inMemoryUserStorage;
+    private final InMemoryFilmStorage inMemoryFilmStorage;
+    private final InMemoryUserStorage inMemoryUserStorage;
 
     @Autowired
     public FilmService(InMemoryFilmStorage inMemoryFilmStorage, InMemoryUserStorage inMemoryUserStorage) {
@@ -25,7 +25,18 @@ public class FilmService {
         this.inMemoryUserStorage = inMemoryUserStorage;
     }
 
-    //добавление лайка
+    public Collection<Film> findAllFilms() {
+        return inMemoryFilmStorage.findAllFilms();
+    }
+
+    public Film createFilm(Film film) {
+        return inMemoryFilmStorage.createFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        return inMemoryFilmStorage.updateFilm(film);
+    }
+
     public Film addLike(Integer filmId, Integer id) {
         if (!checkFilmUserAvalaibility(filmId, id)) {
             throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно поставить лайк.");
@@ -38,7 +49,6 @@ public class FilmService {
                 .orElseThrow(() -> new UnknownDataException("Запрошенные ресурсы отсутствуют"));
     }
 
-    //удаление лайка
     public Film removeLike(Integer filmId, Integer id) {
         if (!checkFilmUserAvalaibility(filmId, id)) {
             throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно удалить лайк.");
@@ -50,7 +60,6 @@ public class FilmService {
                 .findFirst()
                 .orElseThrow(() -> new UnknownDataException("Запрошенные ресурсы отсутствуют"));
     }
-    //топ10
 
     public Collection<Film> top(Integer count) {
         log.info("Запрошен топ фильмов в количестве: " + count);

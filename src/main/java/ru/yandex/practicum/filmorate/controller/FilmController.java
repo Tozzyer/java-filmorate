@@ -14,42 +14,37 @@ import java.util.Collection;
 @RequestMapping("/films")
 public class FilmController {
 
-    private ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage inMemoryFilmStorage;
-    private FilmService filmService;
+    private final FilmService filmService;
 
     @Autowired
-    public FilmController(ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage inMemoryFilmStorage, FilmService filmService) {
-        this.inMemoryFilmStorage = inMemoryFilmStorage;
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
 
     @GetMapping
     public Collection<Film> findAllFilms() {
-        return inMemoryFilmStorage.findAllFilms();
+        return filmService.findAllFilms();
     }
 
     @PostMapping
     public Film createFilm(@RequestBody Film film) {
-        return inMemoryFilmStorage.createFilm(film);
+        return filmService.createFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
-        return inMemoryFilmStorage.updateFilm(film);
+        return filmService.updateFilm(film);
     }
 
-    //добавление лайка
     @PutMapping("{filmId}/like/{id}")
     public Film addLike(@PathVariable Integer filmId, @PathVariable Integer id) {
         return filmService.addLike(filmId, id);
     }
 
-    //удаление лайка
     @DeleteMapping("{filmId}/like/{id}")
     public Film removeLike(@PathVariable Integer filmId, @PathVariable Integer id) {
         return filmService.removeLike(filmId, id);
     }
-    //топ10
 
     @GetMapping("/popular")
     public Collection<Film> getTop(@RequestParam(defaultValue = "10") Integer count) {

@@ -16,11 +16,23 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
 
-    InMemoryUserStorage inMemoryUserStorage;
+    private final InMemoryUserStorage inMemoryUserStorage;
 
     @Autowired
     public UserService(InMemoryUserStorage userStorage) {
         this.inMemoryUserStorage = userStorage;
+    }
+
+    public Collection<User> findAllUsers() {
+        return inMemoryUserStorage.findAllUsers();
+    }
+
+    public User createUser(User user) {
+        return inMemoryUserStorage.createUser(user);
+    }
+
+    public User updateUser(User user) {
+        return inMemoryUserStorage.updateUser(user);
     }
 
 
