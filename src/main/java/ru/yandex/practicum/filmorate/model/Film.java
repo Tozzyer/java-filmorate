@@ -19,6 +19,8 @@ public class Film {
     private LocalDate releaseDate;
     private long duration;
     private int rating = 0;
+    private Genre genre;
+    private Mpa mpa;
     @JsonIgnore
     private Set<Integer> whoLikes;
 
@@ -45,6 +47,24 @@ public class Film {
         rating++;
         return this;
     }
+
+    public enum Genre {
+        Comedy,
+        Drama,
+        Animation,
+        Thriller,
+        Documentary,
+        Action
+    }
+
+    public enum Mpa {
+        G,
+        PG,
+        PG13,
+        R,
+        NC17
+    }
 }
+
 
 

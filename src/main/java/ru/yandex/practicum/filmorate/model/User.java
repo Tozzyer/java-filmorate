@@ -19,6 +19,7 @@ public class User {
     private String name;
     private LocalDate birthday;
     private Set<Integer> friends;
+    private Set<Integer> notApprovedFriends;
 
     public User addFriend(Integer friendId) {
         if (friends == null) {
