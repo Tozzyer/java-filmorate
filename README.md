@@ -21,4 +21,20 @@ PK: user_id+friend_id - ключ составной, связка id юзера+
 PK: movie_id + user_id - ключ составной, связка фильма и id лайкнувшего юзера уникальна.   
 Из неё можно будет каунтить рейтинг фильма по id, а также искать пересечения по лайкнувшим юзерам для составления списка обших фильмов.
 
+**Примеры запросов**
+1. Получение фильма по id:
+    SELECT*
+    FROM movie
+    WHERE movie_id = {id фильма};
+2. Получение TOP-10 фильмов
+    SELECT *
+    FROM movie
+    WHERE movie_id IN (SELECT movie_id
+    FROM movie_rating
+    GROUP BY movie_id
+    ORDER BY COUNT(user_id) DESC
+    LIMIT 10);
+
+    
+
 ![Диаграмма базы данных](src/main/resources/Java-filmorate%20SQL%20db.png)
