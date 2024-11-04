@@ -38,3 +38,5 @@ PK: movie_id + user_id - ключ составной, связка фильма 
     
 
 ![Диаграмма базы данных](src/main/resources/Java-filmorate%20SQL%20db.png)
+
+SP12 start
