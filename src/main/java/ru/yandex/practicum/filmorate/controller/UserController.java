@@ -57,4 +57,9 @@ public class UserController {
         return userService.getFriends(id);
     }
 
+    @GetMapping("/test")
+    public Collection<User> testSequense(@PathVariable Integer id) {
+        return userService.getFriends(id);
+    }
+
 }
