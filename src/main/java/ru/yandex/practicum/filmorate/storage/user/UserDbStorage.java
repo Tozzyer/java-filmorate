@@ -166,7 +166,7 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
-    private User getUserById(Integer id) {
+    public User getUserById(Integer id) {
         log.info("getUserById");
         String sql = "SELECT * FROM users WHERE user_id = ?";
         return jdbcTemplate.queryForObject(sql, this::mapRowToUser, id);

@@ -1,3 +1,13 @@
+CREATE TABLE IF NOT EXISTS movie (
+    movie_id INTEGER PRIMARY KEY,
+    movie_name VARCHAR,
+    movie_description VARCHAR,
+    movie_release DATE,
+    movie_duration TIME,
+    genre_id INTEGER,
+    mpa_id INTEGER
+);
+
 CREATE TABLE IF NOT EXISTS genre (
     genre_id INTEGER PRIMARY KEY,
     genre_name VARCHAR
@@ -31,16 +41,6 @@ MERGE INTO mpa (mpa_id, mpa_name) KEY(mpa_id) VALUES
     (4, 'R'),
     (5, 'NC-17');
 
-
-CREATE TABLE IF NOT EXISTS movie (
-    movie_id INTEGER PRIMARY KEY,
-    movie_name VARCHAR,
-    movie_description VARCHAR,
-    movie_release DATE,
-    movie_duration TIME,
-    genre_id INTEGER,
-    mpa_id INTEGER
-);
 
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
