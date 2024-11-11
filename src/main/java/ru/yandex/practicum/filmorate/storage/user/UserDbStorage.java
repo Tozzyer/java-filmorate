@@ -185,7 +185,7 @@ public class UserDbStorage implements UserStorage {
 
     //Удаление из друзей. Боже, надо было делать сразу с рассчётом на это. Столько лишних переписываний
     public User removeFriend(Integer id, Integer friendId) {
-        log.info("removeFriend"+friendId+"у пользователя"+id);
+        log.info("removeFriend " + friendId + " у пользователя " + id);
         if (!checkFriendsAvalaibility(id, friendId)) {
             throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно удалить из друзей.");
         }
