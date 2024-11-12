@@ -29,7 +29,7 @@ class DataBaseStorageTests {
 
 
     @Test
-    void testCreateAndFindUser() {
+    void createAndFindUserInDataBase() {
         User newUser = new User();
         newUser.setEmail("test@qwerty.com");
         newUser.setLogin("testuser");
@@ -44,7 +44,7 @@ class DataBaseStorageTests {
     }
 
     @Test
-    void testUpdateUser() {
+    void createUserUpdateUserInDatabase() {
         User newUser = new User();
         newUser.setEmail("test@drhdhr.com");
         newUser.setLogin("test");
@@ -59,7 +59,7 @@ class DataBaseStorageTests {
     }
 
     @Test
-    void testFindAllUsers() {
+    void createAndFindAllUsers() {
         User user1 = new User();
         user1.setEmail("user1@dhrhd.com");
         user1.setLogin("user1");
@@ -80,7 +80,7 @@ class DataBaseStorageTests {
     }
 
     @Test
-    void testGetCommonFriends() {
+    void getCommonFriendsFromDatabase() {
         User user1 = new User();
         user1.setEmail("user1@tsw.com");
         user1.setLogin("user1");
@@ -112,7 +112,7 @@ class DataBaseStorageTests {
     }
 
     @Test
-    void testCreateAndGetFilm() {
+    void getFilmFromDatabase() {
         Film newFilm = new Film();
         newFilm.setName("H8full 8");
         newFilm.setDescription("Western Detective");
@@ -127,7 +127,7 @@ class DataBaseStorageTests {
     }
 
     @Test
-    void testUpdateFilm() {
+    void updateFilmInDataBase() {
         Film newFilm = new Film();
         newFilm.setName("Avengers: Infinity War");
         newFilm.setDescription("Popcorn");
@@ -142,7 +142,7 @@ class DataBaseStorageTests {
     }
 
     @Test
-    void testFindAllFilms() {
+    void findAllFilmsInCollection() {
         Film film1 = new Film();
         film1.setName("Movie47");
         film1.setDescription("doubtful");
@@ -163,7 +163,7 @@ class DataBaseStorageTests {
     }
 
     @Test
-    void testGetTopFilms() {
+    void addLikeAndgetTopFilmsFromDatabase() {
         Film film1 = new Film();
         film1.setName("XXX");
         film1.setDescription("XXX");

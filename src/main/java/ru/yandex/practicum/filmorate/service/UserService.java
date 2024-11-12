@@ -35,21 +35,25 @@ public class UserService {
 
     //добавление в друзья
     public User addFriend(Integer id, Integer friendId) {
+        log.info("Команда: добавить друга");
         return userDbStorage.addFriend(id, friendId);
     }
 
     //удаление из друзей
     public User removeFriend(Integer id, Integer friendId) {
+        log.info("Команда: удалить друга");
         return userDbStorage.removeFriend(id, friendId);
     }
 
     //вывод списка общих друзей
     public Collection<User> getCommonFriends(Integer id, Integer friendId) {
+        log.info("Команда: получить список общих друзей");
         return userDbStorage.getCommonFriends(id, friendId);
     }
 
-    //кто сказал что нет друзей
+    //получить другов
     public Collection<User> getFriends(Integer id) {
+        log.info("Команда: получить список друзей");
         return userDbStorage.getFriends(id);
     }
 
