@@ -51,7 +51,7 @@ public class UserService {
         return userDbStorage.getCommonFriends(id, friendId);
     }
 
-    //получить другов
+    //получить друзей
     public Collection<User> getFriends(Integer id) {
         log.info("Команда: получить список друзей");
         return userDbStorage.getFriends(id);
