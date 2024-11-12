@@ -3,14 +3,16 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.exceptions.UnknownDataException;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Film {
     private int id;
@@ -19,6 +21,8 @@ public class Film {
     private LocalDate releaseDate;
     private long duration;
     private int rating = 0;
+    private Collection<Genre> genres;
+    private Mpa mpa;
     @JsonIgnore
     private Set<Integer> whoLikes;
 
@@ -46,5 +50,6 @@ public class Film {
         return this;
     }
 }
+
 
 

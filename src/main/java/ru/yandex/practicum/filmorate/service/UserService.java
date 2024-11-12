@@ -3,119 +3,58 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.UnknownDataException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service
 @Slf4j
 public class UserService {
 
-    private final InMemoryUserStorage inMemoryUserStorage;
+    private final UserDbStorage userDbStorage;
 
     @Autowired
-    public UserService(InMemoryUserStorage userStorage) {
-        this.inMemoryUserStorage = userStorage;
+    public UserService(UserDbStorage userStorage) {
+        this.userDbStorage = userStorage;
     }
 
     public Collection<User> findAllUsers() {
-        return inMemoryUserStorage.findAllUsers();
+        return userDbStorage.findAllUsers();
     }
 
     public User createUser(User user) {
-        return inMemoryUserStorage.createUser(user);
+        return userDbStorage.createUser(user);
     }
 
     public User updateUser(User user) {
-        return inMemoryUserStorage.updateUser(user);
+        return userDbStorage.updateUser(user);
     }
 
 
     //добавление в друзья
     public User addFriend(Integer id, Integer friendId) {
-        if (!checkFriendsAvalaibility(id, friendId)) {
-            throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно добавить в друзья.");
-        }
-        User updatedFriend = inMemoryUserStorage.findAllUsers().stream()
-                .filter(user -> user.getId() == friendId)
-                .map(user -> user.addFriend(id))
-                .findFirst()
-                .orElseThrow(() -> new UnknownDataException("Пользователь отсутствует"));
-        inMemoryUserStorage.updateUser(updatedFriend);
-
-        User updatedUser = inMemoryUserStorage.findAllUsers().stream()
-                .filter(user -> user.getId() == id)
-                .map(user -> user.addFriend(friendId))
-                .findFirst()
-                .orElseThrow(() -> new UnknownDataException("Пользователь отсутствует"));
-        log.info("Запрошено добавление в друзья: " + id + ". От пользователя: " + friendId);
-        return inMemoryUserStorage.updateUser(updatedUser);
+        log.info("Команда: добавить друга");
+        return userDbStorage.addFriend(id, friendId);
     }
 
     //удаление из друзей
     public User removeFriend(Integer id, Integer friendId) {
-        if (!checkFriendsAvalaibility(id, friendId)) {
-            throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно удалить из друзей.");
-        }
-        User updatedFriend = inMemoryUserStorage.findAllUsers().stream()
-                .filter(user -> user.getId() == friendId)
-                .map(user -> user.deleteFriend(id))
-                .findFirst()
-                .orElseThrow(() -> new UnknownDataException("Пользователь отсутствует"));
-        inMemoryUserStorage.updateUser(updatedFriend);
-
-        User updatedUser = inMemoryUserStorage.findAllUsers().stream()
-                .filter(user -> user.getId() == id)
-                .map(user -> user.deleteFriend(friendId))
-                .findFirst()
-                .orElseThrow(() -> new UnknownDataException("Пользователь отсутствует"));
-        log.info("Запрошено удаление из в друзей: " + id + ". От пользователя: " + friendId);
-        return inMemoryUserStorage.updateUser(updatedUser);
+        log.info("Команда: удалить друга");
+        return userDbStorage.removeFriend(id, friendId);
     }
 
     //вывод списка общих друзей
     public Collection<User> getCommonFriends(Integer id, Integer friendId) {
-        if (!checkFriendsAvalaibility(id, friendId))
-            throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно сформировать список общих друзей.");
-        User firstUser = inMemoryUserStorage.findAllUsers().stream()
-                .filter(user -> user.getId() == id)
-                .findFirst()
-                .orElse(null);
-        User secondUser = inMemoryUserStorage.findAllUsers().stream()
-                .filter(user -> user.getId() == friendId)
-                .findFirst()
-                .orElse(null);
-        Set<Integer> commonId = firstUser.getFriends().stream()
-                .filter(secondUser.getFriends()::contains)
-                .collect(Collectors.toSet());
-        log.info("Запрошены общие друзья: " + id + ". И: " + friendId);
-        return inMemoryUserStorage.findAllUsers().stream()
-                .filter(user -> commonId.contains(user.getId()))
-                .collect(Collectors.toList());
+        log.info("Команда: получить список общих друзей");
+        return userDbStorage.getCommonFriends(id, friendId);
     }
 
+    //получить друзей
     public Collection<User> getFriends(Integer id) {
-        if (!(inMemoryUserStorage.findAllUsers().stream().anyMatch(user -> user.getId() == id))) {
-            throw new UnknownDataException("Запрошенные ресурсы отсутствуют. Невозможно сформировать список друзей");
-        }
-        Collection<Integer> friendsIds = inMemoryUserStorage.findAllUsers().stream()
-                .filter(user -> user.getId() == id)
-                .flatMap(user -> user.getFriends().stream())
-                .collect(Collectors.toSet());
-        return inMemoryUserStorage.findAllUsers().stream()
-                .filter(user -> friendsIds.contains(user.getId()))
-                .collect(Collectors.toSet());
-    }
-
-    //проверка добавления друга
-    private boolean checkFriendsAvalaibility(Integer id, Integer friendId) {
-        return inMemoryUserStorage.findAllUsers().stream().anyMatch(user -> user.getId() == id) &&
-                inMemoryUserStorage.findAllUsers().stream().anyMatch(user -> user.getId() == friendId);
+        log.info("Команда: получить список друзей");
+        return userDbStorage.getFriends(id);
     }
 
 }
